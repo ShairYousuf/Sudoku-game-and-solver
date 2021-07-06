@@ -15,8 +15,9 @@ class App:
         self.playingButtons=[]
         self.menuButtons=[]
         self.endButtons=[]
+        self.lockedCells=[]
         self.font=pygame.font.SysFont("arial",cellSize//2)
-        self.loadButtons()
+        self.load()
     
     def run(self):
         while self.running:
@@ -54,11 +55,21 @@ class App:
         if self.selected:
             self.drawSelection(self.window,self.selected)
 
+        self.shadeLockedCells(self.window,self.lockedCells)
+        
+
         self.drawNumbers(self.window)
 
         self.drawGrid(self.window)
         pygame.display.update()
 ### HELPER FUNCTION
+    def shadeLockedCells(self,window,locked):
+        for cell in locked:
+            pygame.draw.rect(window,LOCKEDCELLCOLOUR,(cell[0]*cellSize+gridPos[0],cell[1]*cellSize+gridPos[1],cellSize,cellSize))
+
+
+
+
     def drawNumbers(self,window):
         for yidx,row in enumerate(self.grid):
             for xidx,num in enumerate(row):
@@ -100,4 +111,13 @@ class App:
         pos[0] += (cellSize-fontWidth)//2
         pos[1] +=(cellSize-fontHeight)//2
         window.blit(font,pos)
+    
+    def load(self):
+        self.loadButtons()
+        #setting locked cells from initial board
+        for yidx, row in enumerate(self.grid):
+            for xidx, num in enumerate(row):
+                if num!=0:
+                    self.lockedCells.append([xidx,yidx])
+        
 
